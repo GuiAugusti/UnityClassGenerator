@@ -6,3 +6,8 @@ It allows for convenient saving of classes in any location, without the requirem
 Easy locating of the generated script;
 Seamless editing of the generated file;
 Alongside other impressive features!
+
+To access it, go to HopeStudios > C# Class Generator. 
+Then dock the new window into an easily accessible location.
+
+Enjoy! :)
