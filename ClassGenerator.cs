@@ -8,7 +8,7 @@ namespace HopeStudios
 {
     public class ClassGenerator : EditorWindow
     {
-        private static readonly string TemplateWithoutInheritance =
+        private static readonly string _templateWithoutInheritance =
 @"using UnityEngine;
 
 public class |SCRIPT|
@@ -16,7 +16,7 @@ public class |SCRIPT|
     |OVERRIDEMETHODS|
 }";
 
-        private static readonly string TemplateWithInheritance =
+        private static readonly string _templateWithInheritance =
 @"using UnityEngine;
 
 public class |SCRIPT| : MonoBehaviour
@@ -24,11 +24,11 @@ public class |SCRIPT| : MonoBehaviour
     |OVERRIDEMETHODS|
 }";
 
-        private string className = "";
-        private bool useMono = true;
-        private bool useOverride = false;
-        private string selectedFolderPath = "Assets/Scripts";
-        private string generatedScriptAssetPath;
+        private string _className = "";
+        private bool _useMono = true;
+        private bool _useOverride = false;
+        private string _selectedFolderPath = "Assets/Scripts";
+        private string _generatedScriptAssetPath;
 
 
 
@@ -42,22 +42,22 @@ public class |SCRIPT| : MonoBehaviour
         private void OnGUI()
         {
             GUILayout.Label("Enter the name for the new C# class:");
-            className = EditorGUILayout.TextField(className);
+            _className = EditorGUILayout.TextField(_className);
 
             GUIContent monoContent = new GUIContent("Use MonoBehaviour", "Enable to make the class inherit from MonoBehaviour");
-            useMono = EditorGUILayout.Toggle(monoContent, useMono);
+            _useMono = EditorGUILayout.Toggle(monoContent, _useMono);
 
             GUIContent overrideContent = new GUIContent("Generate base methods", "Enable to automatically generate Awake, Start, and Update methods");
-            useOverride = EditorGUILayout.Toggle(overrideContent, useOverride);
+            _useOverride = EditorGUILayout.Toggle(overrideContent, _useOverride);
 
             GUILayout.Space(10);
 
-            string relativeFolderPath = selectedFolderPath.Replace(Application.dataPath, "Assets");
+            string relativeFolderPath = _selectedFolderPath.Replace(Application.dataPath, "Assets");
             GUILayout.Label("Generation Folder\n" + relativeFolderPath);
 
             if (GUILayout.Button("Select Folder"))
             {
-                selectedFolderPath = EditorUtility.OpenFolderPanel("Select Folder", Application.dataPath, "");
+                _selectedFolderPath = EditorUtility.OpenFolderPanel("Select Folder", Application.dataPath, "");
             }
 
             GUILayout.Space(10);
@@ -83,13 +83,13 @@ public class |SCRIPT| : MonoBehaviour
 
         private void FindGeneratedScript()
         {
-            if (string.IsNullOrEmpty(generatedScriptAssetPath))
+            if (string.IsNullOrEmpty(_generatedScriptAssetPath))
             {
                 Debug.Log("No script has been generated.");
                 return;
             }
 
-            string assetPath = AssetDatabase.GUIDToAssetPath(generatedScriptAssetPath);
+            string assetPath = AssetDatabase.GUIDToAssetPath(_generatedScriptAssetPath);
             Object scriptAsset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
             EditorGUIUtility.PingObject(scriptAsset);
             Selection.activeObject = scriptAsset;
@@ -97,37 +97,37 @@ public class |SCRIPT| : MonoBehaviour
 
         private void OpenGeneratedScript()
         {
-            if (string.IsNullOrEmpty(generatedScriptAssetPath))
+            if (string.IsNullOrEmpty(_generatedScriptAssetPath))
             {
                 Debug.Log("No script has been generated.");
                 return;
             }
 
-            string assetPath = AssetDatabase.GUIDToAssetPath(generatedScriptAssetPath);
+            string assetPath = AssetDatabase.GUIDToAssetPath(_generatedScriptAssetPath);
             Object scriptAsset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
             AssetDatabase.OpenAsset(scriptAsset);
         }
 
         private void CreateScript()
         {
-            if (string.IsNullOrEmpty(className))
+            if (string.IsNullOrEmpty(_className))
             {
                 Debug.Log("Class name cannot be empty.");
                 return;
             }
 
-            if (string.IsNullOrEmpty(selectedFolderPath))
+            if (string.IsNullOrEmpty(_selectedFolderPath))
             {
                 Debug.Log("No folder selected.");
                 return;
             }
 
-            string template = useMono ? TemplateWithInheritance : TemplateWithoutInheritance;
-            string overrideMethods = useOverride ? GenerateOverrideMethods() : "";
+            string template = _useMono ? _templateWithInheritance : _templateWithoutInheritance;
+            string overrideMethods = _useOverride ? GenerateOverrideMethods() : "";
 
-            string assetPathAndName = GenerateUniqueAssetPath(selectedFolderPath, className);
+            string assetPathAndName = GenerateUniqueAssetPath(_selectedFolderPath, _className);
 
-            template = template.Replace("|SCRIPT|", className);
+            template = template.Replace("|SCRIPT|", _className);
             template = template.Replace("|OVERRIDEMETHODS|", overrideMethods);
 
             WriteScriptToFile(template, assetPathAndName);
@@ -137,7 +137,7 @@ public class |SCRIPT| : MonoBehaviour
             string relativeAssetPath = assetPathAndName.Replace(Application.dataPath, "Assets");
 
             // Set the generatedScriptAssetPath
-            generatedScriptAssetPath = AssetDatabase.AssetPathToGUID(relativeAssetPath);
+            _generatedScriptAssetPath = AssetDatabase.AssetPathToGUID(relativeAssetPath);
         }
 
 
