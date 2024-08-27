@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace HopeStudios
+namespace ScriptGenerator
 {
     public class ClassGenerator : EditorWindow
     {
